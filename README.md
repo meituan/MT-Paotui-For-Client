@@ -11,7 +11,6 @@
 - **POI 地址搜索**：地址簿匹配不到时，通过关键词搜索补全坐标
 - **两步确认**：先预览费用，用户确认后再正式提交，防止误单
 - **订单查询**：实时查看订单状态
-- **Passport OAuth**：授权链接登录，Token 自动缓存，登出删除缓存文件即可
 
 ## 触发词
 
@@ -26,7 +25,7 @@ meituan-paotui-passport-v0/
 ├── SKILL.md              # 核心技能说明（Agent 指令）
 ├── README.md             # 本文件
 ├── dist/
-│   ├── paotui.js         # 核心下单脚本（混淆打包版）
+│   ├── paotui.js         # 核心下单脚本
 │   └── run.sh            # 启动脚本（推荐使用）
 ├── references/
 │   ├── commands.md       # 所有命令及参数说明
@@ -38,37 +37,16 @@ meituan-paotui-passport-v0/
 
 ---
 
-## 场景零：授权 / 获取 Token
-
-### 触发条件
-
-本地无有效 Passport Token，或 Token 已过期（下单命令返回授权错误时自动触发）。
+## 场景零：授权
 
 ### 执行流程
 
-1. 调用业务命令时自动检测 Token，无效则返回授权链接
+1. 调用业务命令时自动检测是否登录，未登录则返回授权链接
 2. 根据使用环境完成授权：
 
 📱 **手机端**：直接点击授权链接，跳转美团 App 完成授权
 
 💻 **电脑端**：将授权链接复制到手机浏览器打开，再用美团 App 完成授权（链接 5 分钟内有效）
-
-3. 完成授权后告知 Agent，系统调用 `confirm_auth` 轮询授权结果
-4. 授权成功后 Token 写入缓存，后续无需重复操作
-
-### Token 缓存
-
-- 路径：`~/.xiaomei-workspace/mt_passport_auth.json`
-- 有效期：服务端控制，过期后自动重新授权
-- **登出方式**：直接删除缓存文件 `rm ~/.xiaomei-workspace/mt_passport_auth.json`
-
-### 命令
-
-```bash
-sh dist/run.sh confirm_auth
-```
-
-> ⚠️ `confirm_auth` 必须在用户完成授权后立即调用，auth_code 有效期 600 秒，延迟会导致授权失败。
 
 ---
 
@@ -177,8 +155,6 @@ sh dist/run.sh get_order_status --order-id "<orderViewId>"
 - **两步确认**：先预览展示费用，等用户回复"确认"后才加 `--confirm` 提交
 - **金额拦截**：费用超过 100 元需额外向用户确认
 - **地址完整性**：取件地址、收件地址、联系电话缺一不可
-- **houseNumber / name / remark 固定留空**：填写会触发风控（11004~11008）
-
 ---
 
 ## 相关文档
