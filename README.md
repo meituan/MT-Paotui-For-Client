@@ -116,8 +116,8 @@ sh dist/run.sh search_poi --keyword "融新科技中心" --city "北京" --lat 3
 ```bash
 # 预览
 sh dist/run.sh preview_and_submit \
-  --sender '{"address":"玖星公寓","houseNumber":"","lat":40011253,"lng":116508883,"name":"","phone":"187****0436","cityId":110100}' \
-  --recipient '{"address":"朝来科技产业园西区-1号楼","houseNumber":"","lat":40020135,"lng":116469935,"name":"","phone":"187****0436","cityId":110100}' \
+  --sender '{"address":"朝来科技产业园西区","houseNumber":"","lat":40011253,"lng":116508883,"name":"","phone":"182****0000","cityId":110100}' \
+  --recipient '{"address":"朝来科技产业园西区-1号楼","houseNumber":"","lat":40020135,"lng":116469935,"name":"","phone":"182****1111","cityId":110100}' \
   --goods '{"goodsName":"文件","goodsWeight":1,"goodTypes":[4],"goodTypeNames":["文件"]}' \
   --business-type 1
 
