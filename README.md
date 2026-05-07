@@ -21,7 +21,7 @@
 ## 目录结构
 
 ```
-meituan-paotui-passport-v0/
+MT-Paotui-For-Client/
 ├── SKILL.md              # 核心技能说明（Agent 指令）
 ├── README.md             # 本文件
 ├── dist/
