@@ -1,6 +1,6 @@
 # 美团跑腿下单助手
 
-通过直接调用美团跑腿接口完成下单全流程，支持帮取送、帮忙、帮买三大类场景。适用于工作场景：寄送合同/文件/设备、同城取件、办公室间物品转运、紧急采购等。
+通过直接调用美团跑腿接口完成下单全流程，支持帮取送、帮忙、帮买三大类场景。
 
 ## 功能特性
 
@@ -14,7 +14,7 @@
 
 ## 触发词
 
-帮我下跑腿、跑腿下单、美团跑腿、帮我送东西、跑腿订单、帮我取号、帮我搬、帮我买、寄文件、送合同、取快递、同城配送
+跑腿、下跑腿单、美团跑腿、同城配送、取号、挂号、排号、排队、帮搬、帮买、帮扔、帮忙、扔垃圾、寄文件、叫骑手、骑手帮忙、送东西、帮取、配送、帮送、买东西。
 
 ---
 
@@ -34,6 +34,16 @@ MT-Paotui-For-Client/
 ```
 
 > ⚠️ 本 Skill 使用 **Node.js** 运行，需要 Node.js 18+ 环境。
+
+## 风险提示与免责声明：
+
+本 Skill 运行在用户自行选择的独立AI 助手环境中，由用户自行选择的大模型驱动。美团仅提供跑腿相关接口和 Skill 定义，不对 AI 助手的运行环境、大模型安全合规性承担任何责任。
+
+• 用户应确保所使用的 AI 助手已在中国大陆完成安全备案，并符合相关法律法规要求
+
+• 用户应审慎评估 AI 对需求的理解偏差风险，使用本人账号授权操作，确认订单预览后再提交
+
+• 如发现异常订单或 AI 行为异常，请立即联系美团客服处理
 
 ---
 
@@ -88,7 +98,7 @@ sh dist/run.sh get_address_list --address-type 1 --business-type 2 --scene 2
 ### 命令
 
 ```bash
-sh dist/run.sh search_poi --keyword "融新科技中心" --city "北京" --lat 39904200 --lng 116407400
+sh dist/run.sh search_poi --keyword "奥林匹克森林公园南门" --city "北京" --lat 39904200 --lng 116407400
 ```
 
 ### 参数说明
@@ -116,8 +126,8 @@ sh dist/run.sh search_poi --keyword "融新科技中心" --city "北京" --lat 3
 ```bash
 # 预览
 sh dist/run.sh preview_and_submit \
-  --sender '{"address":"朝来科技产业园西区","houseNumber":"","lat":40011253,"lng":116508883,"name":"","phone":"182****0000","cityId":110100}' \
-  --recipient '{"address":"朝来科技产业园西区-1号楼","houseNumber":"","lat":40020135,"lng":116469935,"name":"","phone":"182****1111","cityId":110100}' \
+  --sender '{"address":"奥林匹克森林公园南门","houseNumber":"","lat":40011253,"lng":116508883,"name":"","phone":"123****4567","cityId":110100}' \
+  --recipient '{"address":"望京soho","houseNumber":"","lat":40020135,"lng":116469935,"name":"","phone":"123****6789","cityId":110100}' \
   --goods '{"goodsName":"文件","goodsWeight":1,"goodTypes":[4],"goodTypeNames":["文件"]}' \
   --business-type 1
 
