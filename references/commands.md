@@ -15,7 +15,7 @@ node dist/paotui.js <command> [args...]
 ## 命令列表
 
 ### login
-发起授权登录流程，获取授权链接并轮询等待用户确认。整合了获取授权链接 + 轮询确认的完整流程。
+一体化登录命令（内置 Passport PKCE 授权，无需外部依赖）。自动完成：检查缓存 → 获取授权链接 → 输出链接 → 轮询等待扫码 → 写入 Token。
 ```bash
 # 正常登录（有缓存时直接复用）
 sh dist/run.sh login
@@ -24,21 +24,18 @@ sh dist/run.sh login
 sh dist/run.sh login --force
 ```
 - 检查本地 Token 缓存是否存在且有效
-  - **缓存有效且未指定 `--force`** → 直接返回 `✅ 已登录`，无需重新授权
-  - **缓存不存在 / 已失效 / 指定了 `--force`** → 调用 `pt-passport auth get-code` 获取授权链接
-- 输出授权链接（`AUTH_LINK: <url>`），由 Skill 展示给用户
-- 用户完成授权后，自动轮询状态并写入 Token 缓存
-- 成功 → 返回 `✅ 授权成功`
-- 失败 → 返回具体错误
+  - **缓存有效且未指定 `--force`** → 直接输出 `✅ 已登录`，退出码 0
+  - **缓存不存在 / 已失效 / 指定了 `--force`** → 获取授权链接，输出 `AUTH_LINK: <url>`
+- 输出链接后立即进入轮询（间隔 3s，最多 600s）
+- 用户在美团 App 中确认授权后，自动写入 Token 缓存并输出 `✅ 授权成功`
+- 退出码：0 = 成功，1 = 失败（含超时/取消/风控）
 
 > ⚠️ 当接口返回 `code: 10000`（Token 服务端过期）时，应自动执行 `login --force` 重新授权。
 
-**依赖**：需要系统已安装 `pt-passport` CLI（通过 `meituan-passport-user-auth` Skill 安装）。
-
 ---
 
-### confirm_auth
-用户扫码授权后，轮询 Passport 授权状态并写入 Token 缓存。（推荐使用 `login` 命令代替）
+### confirm_auth（兼容，推荐使用 login 代替）
+用户扫码授权后，轮询 Passport 授权状态并写入 Token 缓存。
 ```bash
 sh dist/run.sh confirm_auth
 ```
@@ -47,7 +44,7 @@ sh dist/run.sh confirm_auth
 - 成功 → Token 写入 `~/.xiaomei-workspace/mt_passport_auth.json`，返回 `✅ 授权成功`
 - 失败（超时/风控/取消）→ 返回具体错误，Token 不写入
 
-> ⚠️ `confirm_auth` 必须在用户扫码后立即调用，不得跳过或延迟，否则 auth_code 过期。
+> ⚠️ 此命令保留向后兼容，新流程请使用 `login` 命令。
 
 ---
 
