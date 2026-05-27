@@ -15,9 +15,9 @@ node dist/paotui.js <command> [args...]
 ## 命令列表
 
 ### login
-检查登录状态 / 获取授权链接+二维码（快速返回，不轮询）。
+检查登录状态 / 获取授权链接（快速返回，不轮询）。
 ```bash
-# 检查是否已登录（有缓存 → "已登录"退出；无缓存 → 输出授权链接+二维码后退出）
+# 检查是否已登录（有缓存 → "已登录"退出；无缓存 → 输出授权链接后退出）
 sh dist/run.sh login
 
 # 强制重新获取授权链接（忽略本地缓存，用于 Token 服务端过期的场景）
@@ -25,8 +25,8 @@ sh dist/run.sh login --force
 ```
 - 检查本地 Token 缓存是否存在
   - **缓存存在且未指定 `--force`** → 直接输出 `✅ 已登录`，退出码 0（耗时 ~100ms）
-  - **缓存不存在 / 指定了 `--force`** → 获取授权链接，输出 `AUTH_QRCODE: <path>` + `AUTH_LINK: <url>`，退出码 0（耗时 ~800ms）
-- **不进入轮询**，立即返回。Agent 展示二维码/链接给用户后，等用户扫码，再调用 `confirm_auth`
+  - **缓存不存在 / 指定了 `--force`** → 获取授权链接，输出 `AUTH_LINK: <url>`，退出码 0（耗时 ~800ms）
+- **不进入轮询**，立即返回。Agent 展示链接给用户后，等用户完成授权，再调用 `confirm_auth`
 - 退出码：0 = 检查通过/链接已生成，1 = 获取链接失败
 
 > ⚠️ 当接口返回 `code: 10000`（Token 服务端过期）时，应自动执行 `login --force` 重新授权。
@@ -43,7 +43,7 @@ sh dist/run.sh confirm_auth
 - 成功 → Token 写入 `~/.xiaomei-workspace/mt_passport_auth.json`，返回 `✅ 授权成功`
 - 失败（超时/风控/取消）→ 返回具体错误，Token 不写入
 
-> 标准授权流程：`login` → 展示二维码给用户 → 用户扫码 → `confirm_auth`
+> 标准授权流程：`login` → 展示授权链接给用户 → 用户完成授权 → `confirm_auth`
 
 ---
 
