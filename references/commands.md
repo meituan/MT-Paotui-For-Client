@@ -15,36 +15,35 @@ node dist/paotui.js <command> [args...]
 ## 命令列表
 
 ### login
-一体化登录命令（内置 Passport PKCE 授权，无需外部依赖）。自动完成：检查缓存 → 获取授权链接 → 输出链接 → 轮询等待扫码 → 写入 Token。
+检查登录状态 / 获取授权链接+二维码（快速返回，不轮询）。
 ```bash
-# 正常登录（有缓存时直接复用）
+# 检查是否已登录（有缓存 → "已登录"退出；无缓存 → 输出授权链接+二维码后退出）
 sh dist/run.sh login
 
-# 强制重新授权（忽略本地缓存，用于 Token 服务端过期的场景）
+# 强制重新获取授权链接（忽略本地缓存，用于 Token 服务端过期的场景）
 sh dist/run.sh login --force
 ```
-- 检查本地 Token 缓存是否存在且有效
-  - **缓存有效且未指定 `--force`** → 直接输出 `✅ 已登录`，退出码 0
-  - **缓存不存在 / 已失效 / 指定了 `--force`** → 获取授权链接，输出 `AUTH_LINK: <url>`
-- 输出链接后立即进入轮询（间隔 3s，最多 600s）
-- 用户在美团 App 中确认授权后，自动写入 Token 缓存并输出 `✅ 授权成功`
-- 退出码：0 = 成功，1 = 失败（含超时/取消/风控）
+- 检查本地 Token 缓存是否存在
+  - **缓存存在且未指定 `--force`** → 直接输出 `✅ 已登录`，退出码 0（耗时 ~100ms）
+  - **缓存不存在 / 指定了 `--force`** → 获取授权链接，输出 `AUTH_QRCODE: <path>` + `AUTH_LINK: <url>`，退出码 0（耗时 ~800ms）
+- **不进入轮询**，立即返回。Agent 展示二维码/链接给用户后，等用户扫码，再调用 `confirm_auth`
+- 退出码：0 = 检查通过/链接已生成，1 = 获取链接失败
 
 > ⚠️ 当接口返回 `code: 10000`（Token 服务端过期）时，应自动执行 `login --force` 重新授权。
 
 ---
 
-### confirm_auth（兼容，推荐使用 login 代替）
-用户扫码授权后，轮询 Passport 授权状态并写入 Token 缓存。
+### confirm_auth
+用户扫码后调用，轮询 Passport 授权状态并写入 Token 缓存。
 ```bash
 sh dist/run.sh confirm_auth
 ```
-- 读取 `/tmp/mt_passport_session.json` 中的 auth_code
+- 读取 `/tmp/mt_passport_session.json` 中的 auth_code（由 login 命令写入）
 - 轮询 `/api/account/userauth/check`，等待用户 App 确认（最多 600 秒）
 - 成功 → Token 写入 `~/.xiaomei-workspace/mt_passport_auth.json`，返回 `✅ 授权成功`
 - 失败（超时/风控/取消）→ 返回具体错误，Token 不写入
 
-> ⚠️ 此命令保留向后兼容，新流程请使用 `login` 命令。
+> 标准授权流程：`login` → 展示二维码给用户 → 用户扫码 → `confirm_auth`
 
 ---
 
