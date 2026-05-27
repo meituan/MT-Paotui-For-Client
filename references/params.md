@@ -24,10 +24,10 @@
 
 ```json
 {
-  "goodsName": "文件",
+  "goodsName": "其他",
   "goodsWeight": 1,          // 物品实际重量（公斤数），值是多少就是多少公斤，如 15 表示 15kg。重量越大配送费越贵
-  "goodTypes": [4],          // 物品类型数组
-  "goodTypeNames": ["文件"]  // 物品类型名称数组（与 goodTypes 一一对应）
+  "goodTypes": [8],          // 物品类型数组，必须按下方映射表选择对应值，禁止直接复制此示例
+  "goodTypeNames": ["其他"]  // 物品类型名称数组（与 goodTypes 一一对应）
 }
 ```
 
